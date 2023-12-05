@@ -1,6 +1,6 @@
 // First install "DHT sensor library" via the Library Manager
 #include <DHT.h>
-
+#include <Wire.h> // 引入I2C库
 #include <MKRWAN.h>
 #include <ArduinoLowPower.h>
 
@@ -11,6 +11,9 @@ const char *appKey = "11786519385ACA2323CF7A82F96C09CB";
 #define debugSerial Serial
 #define DHTPIN 2  //Digital Pin 2
 #define DHTTYPE DHT22
+
+// BH1750 I2C地址
+int BH1750address = 0x23;
 
 int lightSensorPin = A0; //A0 LIGHTPIN
 
@@ -23,25 +26,18 @@ const int sensorMin = 0; // sensor minimum
 const int sensorMax = 1024; // sensor maximum
 
 
-
-#include <Wire.h>
-#include <math.h>
-
- 
-int BH1750address = 0x23;//BH1750 I2C地址  //ADDR="L" for this module
+// 存储从传感器读取的两个字节的数据
 byte buff[2];
-
-
-unsigned long previousMillis = 0; // 保存上次触发时间
-const long interval = 2000; // 定时器间隔时间，2000毫秒（2秒）
 
 
 void setup(){
 
-  Wire.begin();
-
   debugSerial.begin(9600);
+ // 初始化I2C通信
+  Wire.begin(); // 对于MKR WAN 1310，直接调用Wire.begin()即可
 
+  // 初始化BH1750
+  BH1750_Init(BH1750address);
   // Wait a maximum of 10s for Serial Monitor
   while (!debugSerial && millis() < 10000)
     ;
@@ -65,21 +61,15 @@ void setup(){
 
 
 void loop(){
-
-  unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= interval) {
-    // 保存下次触发的时间
-    previousMillis = currentMillis;
-
-    // 执行定时任务
-    Serial.print(BH1750());
-    Serial.println("[lux]");
-  }
-
-
-
   debugSerial.println("-- LOOP");
+ // 读取光照强度
+  float lux = BH1750_ReadLux(BH1750address);
+  
+  // 在串行监视器上打印读取到的光照强度
+  Serial.print(lux);
+  Serial.println(" lux");
 
+ 
   uint16_t humidity = 100*dht.readHumidity(false);
 
   // false: Celsius (default)
@@ -144,32 +134,26 @@ void loop(){
    LowPower.deepSleep(10000);
 }
 
-
-
-
-
-double BH1750() {
-  int i = 0;
-  double val = 0;
-
-  // 开始I2C通信
-  Wire.beginTransmission(BH1750address);
-  Wire.write(0x10); // 使用write代替send
+void BH1750_Init(int address) {
+  Wire.beginTransmission(address);
+  // 向传感器发送启动测量的命令
+  Wire.write(0x10); // 1lx分辨率，120ms测量时间
   Wire.endTransmission();
+}
 
-  delay(200);
-
+float BH1750_ReadLux(int address) {
+  // 请求2字节的数据
+  Wire.beginTransmission(address);
+  Wire.requestFrom(address, 2);
+  
   // 读取数据
-  Wire.beginTransmission(BH1750address);
-  Wire.requestFrom(BH1750address, 2);
-  while (Wire.available()) {
-    buff[i] = Wire.read();  // 使用read代替receive
-    i++;
+  if (Wire.available()) {
+    buff[0] = Wire.read();  // 高8位
+    buff[1] = Wire.read();  // 低8位
   }
   Wire.endTransmission();
 
-  if (i == 2) {
-    val = ((buff[0] << 8) | buff[1]) / 1.2;
-  }
-  return val;
+  // 将两个字节的数据转换为光照强度
+  float lux = ((buff[0] << 8) | buff[1]) / 1.2;
+  return lux;
 }
