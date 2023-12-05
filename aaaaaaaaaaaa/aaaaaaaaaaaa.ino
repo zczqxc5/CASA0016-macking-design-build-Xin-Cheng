@@ -64,10 +64,8 @@ void loop(){
   debugSerial.println("-- LOOP");
  // 读取光照强度
   float lux = BH1750_ReadLux(BH1750address);
-  
-  // 在串行监视器上打印读取到的光照强度
-  Serial.print(lux);
-  Serial.println(" lux");
+  int luxInt = (int)(lux * 100);
+ 
 
  
   uint16_t humidity = 100*dht.readHumidity(false);
@@ -75,22 +73,24 @@ void loop(){
   // false: Celsius (default)
   // true: Farenheit
   uint16_t temperature = 100*dht.readTemperature(false);
-  uint16_t sensorValue = analogRead(lightSensorPin); // 读取光敏传感器的值
+  
 
   debugSerial.print("Temperature: ");
   debugSerial.println(temperature);
   debugSerial.print("Humidity: ");
   debugSerial.println(humidity);
-  debugSerial.print("Light: ");
-  debugSerial.println(sensorValue); // 在串行监视器中打印这个值
+   // 在串行监视器上打印读取到的光照强度
+  debugSerial.println("Light: ");
+  debugSerial.print(luxInt);
   
+
   byte payload[7];
   payload[0] = highByte(temperature);
   payload[1] = lowByte(temperature);
   payload[2] = highByte(humidity);
   payload[3] = lowByte(humidity);
-  payload[4] = highByte(sensorValue);
-  payload[5] = lowByte(sensorValue);
+  payload[4] = highByte(luxInt);
+  payload[5] = lowByte(luxInt);
 
   //raindrop sensor
   // read the sensor on analog A0:
@@ -107,30 +107,24 @@ void loop(){
   break;
   case 1: // Sensor getting wet
   Serial.println("Rain Warning");
-  payload[0] = 2;
+  payload[6] = 2;
   break;
   case 2: // Sensor dry – To shut this up delete the ” Serial.println(“Not Raining”); ” below.
   Serial.println("Not Raining");
-  payload[0] = 3;
+  payload[6] = 3;
   break;
   }
 
   
 
   modem.beginPacket();
-  modem.write(payload, 6);
+  modem.write(payload, 7);
   int err = modem.endPacket(true);
   if (err > 0) {
     Serial.println("Message sent correctly!");
   } else {
     Serial.println("Error sending message");
   }
-  
-  
-  
-
-
-
    LowPower.deepSleep(10000);
 }
 
