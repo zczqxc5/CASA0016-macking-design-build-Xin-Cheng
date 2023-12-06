@@ -23,7 +23,8 @@ void setup() {
   // 设置MQTT服务器和端口
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  
+  client.setBufferSize(2048);
+
   // 连接到MQTT
   reconnect();
 }
@@ -55,48 +56,68 @@ void setup_wifi() {
 }
 
 void reconnect() {
- // Loop until we're reconnected
+  // Loop until we're reconnected
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Create a random client ID
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
-    
-    // Attempt to connect with clientID, username and password
+
     if (client.connect(clientId.c_str(), mqttuser, mqttpass)) {
       Serial.println("connected");
-      // ... and resubscribe
-      client.subscribe("v3/datasense@ttn/devices/eui-a8610a3233227908/up");
+      if (client.subscribe("v3/datasense@ttn/devices/eui-a8610a3233227908/up")) {
+        Serial.println("Subscription successful");
+      } else {
+        Serial.println("Subscription failed");
+      }
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
       delay(5000);
     }
   }
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
-  // 解析JSON数据
-  StaticJsonDocument<10000> doc; // 适当调整缓冲区大小以适应您的消息大小
-  deserializeJson(doc, payload, length);
+void callback(char* topic, byte* message, unsigned int length) {
+  Serial.println("Callback triggered");
 
-  // 从JSON文档中提取数据
-  float humidity = doc["uplink_message"]["decoded_payload"]["humidity"];
-  float light = doc["uplink_message"]["decoded_payload"]["light"];
-  int rain = doc["uplink_message"]["decoded_payload"]["rain"];
-  float temperature = doc["uplink_message"]["decoded_payload"]["temperature"];
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
 
-  // 打印提取的数据
-  Serial.print("Humidity: ");
-  Serial.println(humidity);
-  Serial.print("Light: ");
-  Serial.println(light);
-  Serial.print("Rain: ");
-  Serial.println(rain);
-  Serial.print("Temperature: ");
-  Serial.println(temperature);
+  String payload;
+  for (unsigned int i = 0; i < length; i++) {
+    payload += (char)message[i];
+  }
+  Serial.println(payload);
 
-  // 其他处理您需要的代码
+  // 解析 JSON
+  DynamicJsonDocument doc(2048);
+  DeserializationError error = deserializeJson(doc, payload);
+
+  if (error) {
+    Serial.print("JSON deserialization failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  JsonObject decoded_payload = doc["uplink_message"]["decoded_payload"];
+  if (!decoded_payload.isNull()) {
+    float temperature = decoded_payload["temperature"];
+    float humidity = decoded_payload["humidity"];
+    float light = decoded_payload["light"];
+    float rain = decoded_payload["rain"];
+
+    Serial.print("Temperature: ");
+    Serial.println(temperature);
+    Serial.print("Humidity: ");
+    Serial.println(humidity);
+    Serial.print("Light: ");
+    Serial.println(light);
+    Serial.print("Rain: ");
+    Serial.println(rain);
+  } else {
+    Serial.println("decoded_payload is null or not found");
+  }
 }
