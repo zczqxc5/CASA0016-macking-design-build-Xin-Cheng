@@ -32,7 +32,7 @@ byte buff[2];
 
 void setup() {
 
-  delay(10000);
+  delay(30000);
 
   debugSerial.begin(9600);
   // 初始化I2C通信

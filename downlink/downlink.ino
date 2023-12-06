@@ -23,7 +23,7 @@ void setup() {
   // 设置MQTT服务器和端口
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  client.setBufferSize(2048);
+  client.setBufferSize(4096);
 
   // 连接到MQTT
   reconnect();
@@ -93,7 +93,7 @@ void callback(char* topic, byte* message, unsigned int length) {
   Serial.println(payload);
 
   // 解析 JSON
-  DynamicJsonDocument doc(2048);
+  DynamicJsonDocument doc(4096);
   DeserializationError error = deserializeJson(doc, payload);
 
   if (error) {
