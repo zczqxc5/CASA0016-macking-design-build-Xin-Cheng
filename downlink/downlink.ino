@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <Servo.h>
 
 // 替换为您的WiFi网络名称和密码
 const char* ssid = "CE-Hub-Student";
@@ -13,9 +14,11 @@ const int mqttPort = 1883;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+Servo myServo; // 创建伺服电机对象
 
 void setup() {
   Serial.begin(115200);
+  myServo.attach(2,500,1200);
 
   // 连接到Wi-Fi网络
   setup_wifi();
@@ -109,6 +112,13 @@ void callback(char* topic, byte* message, unsigned int length) {
     float light = decoded_payload["light"];
     float rain = decoded_payload["rain"];
 
+    if (rain == 3 && light > 300) {
+    myServo.write(181); // 旋转伺服电机到180度
+    }
+    else {
+    myServo.write(0);
+    }
+
     Serial.print("Temperature: ");
     Serial.println(temperature);
     Serial.print("Humidity: ");
@@ -120,4 +130,5 @@ void callback(char* topic, byte* message, unsigned int length) {
   } else {
     Serial.println("decoded_payload is null or not found");
   }
+  
 }
