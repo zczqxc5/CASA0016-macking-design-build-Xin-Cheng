@@ -2,7 +2,14 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <Servo.h>
-
+#include <Wire.h>                                                         //调用库文件
+#include <LiquidCrystal_I2C.h>                                            //调用库文件
+ 
+LiquidCrystal_I2C lcd(0x3F, 16, 2);                                       //配置LCD地址及行列
+ 
+ 
+#define lcd1602TimeInterval 1000                                          //检测一次的时间间隔                   
+unsigned long lcd1602Times = 0;                                           //记录设备运行时间
 // 替换为您的WiFi网络名称和密码
 const char* ssid = "CE-Hub-Student";
 const char* password = "casa-ce-gagarin-public-service";
@@ -12,13 +19,56 @@ const char* mqttpass = "NNSXS.NHPXHJCKORY4WGEK2UDYXNETHH3RC2MGBTLKEDI.GJ3GL5LODB
 const char* mqttServer = "eu1.cloud.thethings.network";
 const int mqttPort = 1883;
 
+int buzzer_pin = 14;
+int length;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 Servo myServo; // 创建伺服电机对象
+//中音NTF 0为空拍
+#define NTF0 -1
+#define NTF1 350
+#define NTF2 393	
+#define NTF3 441
+#define NTF4 495
+#define NTF5 556
+#define NTF6 624
+#define NTF7 661
 
+//高音NTFH
+#define NTFH1 700
+#define NTFH2 786
+#define NTFH3 882
+#define NTFH4 935
+#define NTFH5 965
+#define NTFH6 996
+#define NTFH7 1023
+
+//低音NTFL
+#define NTFL1 175
+#define NTFL2 196
+#define NTFL3 221
+#define NTFL4 234
+#define NTFL5 262
+#define NTFL6 294
+#define NTFL7 330
+
+//音符频率数组 
+int tune[]=
+{
+	NTF3,NTF3,NTF3,NTF3,NTF3,NTF3
+	
+};
+//音符节拍数组
+float durt[]=
+{
+	0.5,0.5,1,0.5,0.5,1
+};
 void setup() {
+  lcd.init();                                                             //初始化LCD
+  lcd.backlight();                                                        //打开背光   注意：如果电流不够的时候，可以将背光关闭
   Serial.begin(115200);
-  myServo.attach(2,500,1200);
+  myServo.attach(2,500,1700);
 
   // 连接到Wi-Fi网络
   setup_wifi();
@@ -27,12 +77,12 @@ void setup() {
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
   client.setBufferSize(4096);
-
+  length = sizeof(tune)/sizeof(tune[0]);
   // 连接到MQTT
   reconnect();
 }
 
-void loop() {
+void loop() {  
   if (!client.connected()) {
     reconnect();
   }
@@ -112,12 +162,31 @@ void callback(char* topic, byte* message, unsigned int length) {
     float light = decoded_payload["light"];
     float rain = decoded_payload["rain"];
 
-    if (rain == 3 && light > 300) {
-    myServo.write(181); // 旋转伺服电机到180度
+    if (rain == 3 && light > 100) {
+    myServo.write(180); // 旋转伺服电机到180度
+      play();
     }
     else {
     myServo.write(0);
     }
+    
+  int roundedTem = round(temperature);
+ 
+  int roundedHum = round(humidity);
+
+  if (millis() - lcd1602Times >= lcd1602TimeInterval) {                   //一定时间执行一次
+    lcd1602Times = millis();
+ 
+    lcd.setCursor(0, 0);                                                  //设置显示位置
+    lcd.print("Temperature:");    
+    lcd.setCursor(12, 0); 
+    lcd.print(roundedTem);   
+                                             //显示字符数据
+    lcd.setCursor(0, 1);                                                  //设置显示位置
+    lcd.print("Humidity:");    
+     lcd.setCursor(12, 1);  
+     lcd.print(roundedHum); 
+}
 
     Serial.print("Temperature: ");
     Serial.println(temperature);
@@ -131,4 +200,17 @@ void callback(char* topic, byte* message, unsigned int length) {
     Serial.println("decoded_payload is null or not found");
   }
   
+  
+}
+
+void play(){
+  for(int x=0;x<length;x++)
+	{
+		tone(buzzer_pin, tune[x]);
+    
+		delay(500*durt[x]);	
+    digitalWrite(ledp,LOW);	
+    delay(100*durt[x]);				//这里的500为控制每个音符的时长来定曲子的节奏
+		noTone(buzzer_pin);
+	}
 }
