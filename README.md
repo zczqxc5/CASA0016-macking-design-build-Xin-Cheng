@@ -1,10 +1,10 @@
 # CASA0016-macking-design-build-Xin-Cheng
 
 ## Overview
-This is a sensor system built for monitoring and store soil moisture and environment conditions, reminds users to water plant when it needs. I also wanted to make the plant feel like a Christmas tree and add some interaction functions for users to communicate with collected data.<br>
-Main codes are in the “Plant-Monitor.ino” file
+The goal of this project is to develop an interactive and educational connected sensors system. This system not only provides real-time environmental data, but also alerts users to engage in outdoor activities when the weather is favourable. The system comprises two distinct yet interconnected devices
 
-https://github.com/zczqxc5/CASA0014-plant-monitor-Xin-Cheng/assets/146037962/908118a1-4dd8-4e60-8fb7-8d5abea68be5
+![Uploading image.png…]()
+
 
 
 ## Functions
