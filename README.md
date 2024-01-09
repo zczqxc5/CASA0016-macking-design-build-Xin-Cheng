@@ -3,7 +3,7 @@
 ## Overview
 The goal of this project is to develop an interactive and educational connected sensors system. This system not only provides real-time environmental data, but also alerts users to engage in outdoor activities when the weather is favourable. The system comprises two distinct yet interconnected devices
 
-![Uploading image.png…]()
+https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/b92368a096995f71f4d00a8a3bcd61d.jpg
 
 
 
