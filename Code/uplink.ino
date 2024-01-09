@@ -1,6 +1,6 @@
 // First install "DHT sensor library" via the Library Manager
 #include <DHT.h>
-#include <Wire.h>  // 引入I2C库
+#include <Wire.h>  // The I2C library is introduced
 #include <MKRWAN.h>
 #include <ArduinoLowPower.h>
 
@@ -12,7 +12,7 @@ const char *appKey = "11786519385ACA2323CF7A82F96C09CB";
 #define DHTPIN 2  //Digital Pin 2
 #define DHTTYPE DHT22
 
-// BH1750 I2C地址
+// BH1750 I2C address
 int BH1750address = 0x23;
 
 int lightSensorPin = A0;  //A0 LIGHTPIN
@@ -26,7 +26,7 @@ const int sensorMin = 0;     // sensor minimum
 const int sensorMax = 1024;  // sensor maximum
 
 
-// 存储从传感器读取的两个字节的数据
+// Stores two bytes of data read from the sensor
 byte buff[2];
 
 
@@ -35,10 +35,9 @@ void setup() {
   delay(30000);
 
   debugSerial.begin(9600);
-  // 初始化I2C通信
-  Wire.begin();  // 对于MKR WAN 1310，直接调用Wire.begin()即可
 
-  // 初始化BH1750
+  Wire.begin();  
+  
   BH1750_Init(BH1750address);
   // Wait a maximum of 10s for Serial Monitor
   while (!debugSerial && millis() < 10000)
@@ -63,7 +62,8 @@ void setup() {
 
 void loop() {
   debugSerial.println("-- LOOP");
-  // 读取光照强度
+  
+  // Read light intensity
   float lux = BH1750_ReadLux(BH1750address);
   int luxInt = (int)(lux * 100);
 
@@ -80,7 +80,7 @@ void loop() {
   debugSerial.println(temperature);
   debugSerial.print("Humidity: ");
   debugSerial.println(humidity);
-  // 在串行监视器上打印读取到的光照强度
+  // Print the read light intensity on the serial monitor
   debugSerial.println("Light: ");
   debugSerial.print(luxInt);
 
@@ -131,24 +131,26 @@ void loop() {
 
 void BH1750_Init(int address) {
   Wire.beginTransmission(address);
-  // 向传感器发送启动测量的命令
-  Wire.write(0x10);  // 1lx分辨率，120ms测量时间
+  // Send a command to the sensor to start the measurement
+  Wire.write(0x10);  // 1lx resolution, 120ms measurement time
+
   Wire.endTransmission();
 }
 
 float BH1750_ReadLux(int address) {
-  // 请求2字节的数据
+  // Request 2 bytes of data
   Wire.beginTransmission(address);
   Wire.requestFrom(address, 2);
 
-  // 读取数据
+  // reading data
+
   if (Wire.available()) {
-    buff[0] = Wire.read();  // 高8位
-    buff[1] = Wire.read();  // 低8位
+    buff[0] = Wire.read();  
+    buff[1] = Wire.read();  
   }
   Wire.endTransmission();
 
-  // 将两个字节的数据转换为光照强度
+ 
   float lux = ((buff[0] << 8) | buff[1]) / 1.2;
   return lux;
 }
