@@ -41,3 +41,7 @@ In The Things Network (TTN), an application is established to receive informatio
 ### 5.Dwonload 3d-printing and laser cuting files, make them, and set up your device
 
 
+## 🔍 Reference
+1. CASA0016 - making, design, build (no date) CE Workshops. Available at: https://workshops.cetools.org/casa0016/ (Accessed: 10 January 2024).
+2. Abhishek0697 (no date) , GitHub. Available at: https://github.com/Abhishek0697/Rain-Sensing-Automatic-Car-Wiper-using-AT89C51-Microcontroller (Accessed: 10 January 2024).
+3. How to make Sun Tracking Sunflower Robot using Arduino (no date) Tinkercad. Available at: https://www.tinkercad.com/projects/How-to-Make-Sun-Tracking-Sunflower-Robot-Using-Ard (Accessed: 10 January 2024). 
