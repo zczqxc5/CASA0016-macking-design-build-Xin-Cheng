@@ -3,7 +3,7 @@
 ## ✨ Overview
 The goal of this project is to develop an interactive and educational connected sensors system. This system not only provides real-time environmental data, but also alerts users to engage in outdoor activities when the weather is favourable. The system comprises two distinct yet interconnected devices<br>
 <img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/weather%20architecture.png"><br>
-
+<br>
 
 
 ## 📕 Functions
@@ -16,12 +16,12 @@ The outdoor component is equipped with sensors collecting environmental data, in
 2. Screen---dispaly data of temperature & humidity
 3. Sound---Play sound between 10-15 (one time per hour) when the weather is good out side<br>
 <img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/1724fa920981c3b5d56a8d092e87ba5.jpg" width="300px"><img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/d8acf7c89188b6c385a391ac87f4fb3.jpg" width="300px"><br>
-
+<br>
  
 
 ## ⚙ Material List
 <img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/a396f846d5060c7879a8871fbb6a116.png" width="600px"><br>
-
+<br>
 
 
 ## 🔍 How to reproduce
