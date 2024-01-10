@@ -2,7 +2,7 @@
 
 ## Overview
 The goal of this project is to develop an interactive and educational connected sensors system. This system not only provides real-time environmental data, but also alerts users to engage in outdoor activities when the weather is favourable. The system comprises two distinct yet interconnected devices<br>
-<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/697c5c1dea37f5defbc89ea48d08d32.png" width="1000px"><br>
+<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/weather%20architecture.png"><br>
 
 
 ## Functions
@@ -13,7 +13,7 @@ The outdoor component is equipped with sensors collecting environmental data, in
 ### Indoor device: 
 1. Servo controlled sun face---showing a smiling face in clear, rainless conditions, and a sad face otherwise
 2. Screen---dispaly data of temperature & humidity
-3. Sound---Play sound between 10-15 (one time per hour) when the weather is good out side
+3. Sound---Play sound between 10-15 (one time per hour) when the weather is good out side<br>
 <img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/1724fa920981c3b5d56a8d092e87ba5.jpg" width="300px"><img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/d8acf7c89188b6c385a391ac87f4fb3.jpg" width="300px"><br>
 
 
@@ -30,8 +30,8 @@ The outdoor component is equipped with sensors collecting environmental data, in
 
 ### 3. Set up network server
 In The Things Network (TTN), an application is established to receive information from the Arduino MKR WAN 1310 board. By modifying the information in the uplink's payload formatters, the data can then be accessed in the live data section.<br>
-<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/9f2d6b1a4607cc3cd2a631e05648f4b.png" ><br>
-<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/c53afc69ba87abef9febd7b2635769a.png" width="350px"><br>
+<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/Weixin%20Screenshot_20240110011127.png" ><br>
+<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/Weixin%20Screenshot_20240110011342.png" width="350px"><br>
 
 ### 4. Use MQTT infomation fron TTN server, set that in your downloaded 'downlink' code file 
 
