@@ -2,12 +2,12 @@
 
 ## Overview
 The goal of this project is to develop an interactive and educational connected sensors system. This system not only provides real-time environmental data, but also alerts users to engage in outdoor activities when the weather is favourable. The system comprises two distinct yet interconnected devices<br>
-<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/697c5c1dea37f5defbc89ea48d08d32.png"><br>
+<img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/697c5c1dea37f5defbc89ea48d08d32.png" width="1000px"><br>
 
 
 ## Functions
 ### Outdoor device: Sense & transmit environmental data
-The outdoor component is equipped with sensors collecting environmental data, including sunlight intensity, rainfall, temperature, and humidity levels. This data is transmitted using LoRa technology.
+The outdoor component is equipped with sensors collecting environmental data, including sunlight intensity, rainfall, temperature, and humidity levels. This data is transmitted using LoRa technology.<br>
 <img src="https://github.com/zczqxc5/CASA0016-macking-design-build-Xin-Cheng/blob/main/pic%26vid/b92368a096995f71f4d00a8a3bcd61d.jpg" width="400px"><br>
 
 ### Indoor device: 
